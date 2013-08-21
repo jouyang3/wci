@@ -20,6 +20,7 @@ public class Source {
 		this.reader = reader;
 	}
 
+	//test method, by concept, it shall work as expected.
 	public synchronized char peekChar() throws Exception {
 		++currentPosition;
 		char character = currentChar();
