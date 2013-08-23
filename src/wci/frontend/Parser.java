@@ -12,7 +12,7 @@ public abstract class Parser implements MessageProducer {
 
 	protected static SymTab symTab;
 	protected static MessageHandler messageHandler;
-	
+
 	public static final String PARSER_SUMMARY_FORMAT = "\n%,20d source lines.\n%,20d syntax errors.\n%.20.2f seconds total parsing time.\n";
 
 	static {
@@ -41,8 +41,6 @@ public abstract class Parser implements MessageProducer {
 	}
 
 	public void addMessageListener(MessageListener listener) {
-		if(listener==null)
-			messageHandler.addListener(new ParserMessageListener());
 		messageHandler.addListener(listener);
 	}
 
@@ -54,23 +52,36 @@ public abstract class Parser implements MessageProducer {
 		messageHandler.sendMessage(message);
 	}
 
-	private class ParserMessageListener implements MessageListener {
-		public void messageReceived(Message message) {
-			MessageType type = message.getType();
+	public static SymTab getSymTab() {
+		return symTab;
+	}
 
-			switch (type) {
-			case PARSER_SUMMARY: {
-				Number body[] = (Number[]) message.getBody();
-				int statementCount = (Integer) body[0];
-				int syntaxErrors = (Integer) body[1];
-				float elapsedTime = (Float) body[2];
+	public static void setSymTab(SymTab symTab) {
+		Parser.symTab = symTab;
+	}
 
-				System.out.printf(PARSER_SUMMARY_FORMAT, statementCount,
-						syntaxErrors, elapsedTime);
-				break;
-			}
-			}
-		}
+	public static MessageHandler getMessageHandler() {
+		return messageHandler;
+	}
+
+	public static void setMessageHandler(MessageHandler messageHandler) {
+		Parser.messageHandler = messageHandler;
+	}
+
+	public Scanner getScanner() {
+		return scanner;
+	}
+
+	public void setScanner(Scanner scanner) {
+		this.scanner = scanner;
+	}
+
+	public ICode getiCode() {
+		return iCode;
+	}
+
+	public void setiCode(ICode iCode) {
+		this.iCode = iCode;
 	}
 
 }

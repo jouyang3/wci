@@ -3,7 +3,14 @@ package wci.frontend;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class Source {
+import wci.message.Message;
+import wci.message.MessageHandler;
+import wci.message.MessageListener;
+import wci.message.MessageProducer;
+
+import static wci.message.MessageType.SOURCE_LINE;
+
+public class Source implements MessageProducer{
 
 	public static final char EOL = '\n';
 
@@ -13,6 +20,12 @@ public class Source {
 	private String line;
 	private int lineNumber;
 	private int currentPosition;
+	
+	private static MessageHandler messageHandler;
+	
+	static{
+		messageHandler = new MessageHandler();
+	}
 
 	public Source(BufferedReader reader) throws IOException {
 		this.lineNumber = 0;
@@ -59,6 +72,12 @@ public class Source {
 
 		if (line != null)
 			++lineNumber;
+		
+		// Send a source line message containing the line number
+		// and the line text to all listeners.
+		if (line != null){
+			sendMessage(new Message(SOURCE_LINE, new Object[]{lineNumber, line}));
+		}
 	}
 
 	public void close() throws Exception {
@@ -108,5 +127,22 @@ public class Source {
 	public void setCurrentPosition(int currentPosition) {
 		this.currentPosition = currentPosition;
 	}
+
+	@Override
+	public void addMessageListener(MessageListener listener) {
+		messageHandler.addListener(listener);
+	}
+
+	@Override
+	public void removeMessageListener(MessageListener listener) {
+		messageHandler.removeListener(listener);
+	}
+
+	@Override
+	public void sendMessage(Message message) {
+		messageHandler.sendMessage(message);
+	}
+	
+	
 
 }
