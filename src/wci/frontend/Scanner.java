@@ -33,6 +33,10 @@ public abstract class Scanner implements MessageProducer {
 		return source.nextChar();
 	}
 	
+	public char peekChar() throws Exception {
+		return source.peekChar();
+	}
+	
 	private static MessageHandler messageHandler;
 	
 	static{

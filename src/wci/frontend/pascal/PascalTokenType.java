@@ -21,6 +21,8 @@ public enum PascalTokenType implements TokenType {
 	
 	IDENTIFIER, INTEGER, REAL, STRING, ERROR, END_OF_FILE;
 	
+	public static final int MAX_TOKEN_CHARACTERS = 2;
+	
 	private static final int FIRST_RESERVED_INDEX = AND.ordinal();
 	private static final int LAST_RESERVED_INDEX = WITH.ordinal();
 	

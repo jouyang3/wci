@@ -39,7 +39,7 @@ public class PascalParserTD extends Parser {
 				if(tokenType != ERROR){
 					sendMessage(new Message(TOKEN, new Object[]{
 						token.getLineNumber(), token.getPosition(),
-						tokenType, token.getText(), token.getType()
+						tokenType, token.getText(), token.getValue()
 					}));
 					
 				} else
