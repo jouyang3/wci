@@ -1,16 +1,31 @@
 package wci.frontend.pascal.tokens;
 
 import static wci.frontend.pascal.PascalErrorCode.INVALID_NUMBER;
+import static wci.frontend.pascal.PascalErrorCode.RANGE_INTEGER;
+import static wci.frontend.pascal.PascalErrorCode.RANGE_REAL;
 import static wci.frontend.pascal.PascalErrorCode.UNEXPECTED_TOKEN;
 import static wci.frontend.pascal.PascalTokenType.ERROR;
 import static wci.frontend.pascal.PascalTokenType.INTEGER;
 import static wci.frontend.pascal.PascalTokenType.REAL;
+import static wci.util.Utility.someEqual;
+
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import wci.frontend.Source;
 import wci.frontend.pascal.PascalToken;
 import wci.frontend.pascal.PascalTokenType;
-import static wci.util.Utility.*;
+import wci.util.Utility;
 
 public class PascalNumberToken extends PascalToken {
+	
+	public static Integer MAX_INTEGER = java.lang.Integer.MAX_VALUE;
+	
+	public static Integer MIN_INTEGER = java.lang.Integer.MIN_VALUE;
+	
+	public static Double MAX_REAL = java.lang.Double.MAX_VALUE+0.0;
+	
+	public static Double MIN_REAL = java.lang.Double.MIN_VALUE+0.0;
 
 	public PascalNumberToken(Source source) throws Exception {
 		super(source);
@@ -21,6 +36,8 @@ public class PascalNumberToken extends PascalToken {
 		extractNumber(textBuffer);
 		text = textBuffer.toString();
 	}
+	
+	public java.math.BigDecimal d;
 
 	protected void extractNumber(StringBuilder textBuffer) throws Exception {
 		char currentChar = currentChar();
@@ -32,8 +49,30 @@ public class PascalNumberToken extends PascalToken {
 			String intPart = intPart(textBuffer);
 			String dotPart = dotPart(textBuffer);
 			String eParts[] = ePart(textBuffer);
-			if(type != ERROR)
-				value = calculateValue(intPart, dotPart, eParts[0], eParts[1]);
+			/*
+			 * TODO: Implement the REAL | INTEGER number check
+			 */
+			if(type != ERROR){
+				BigDecimal number = calculateValue(intPart, dotPart, eParts[0], eParts[1]);
+				if(type == INTEGER){
+					if(number.compareTo(new BigDecimal(MAX_INTEGER))>0 || 
+							number.compareTo(new BigDecimal(MIN_INTEGER)) < 0 ){
+						type = ERROR;
+						value = RANGE_INTEGER;
+					} else
+					value = number.toBigInteger();
+				} else if (type == REAL){
+					if(number.compareTo(new BigDecimal(MAX_REAL))>0 || 
+							number.compareTo(new BigDecimal(MIN_REAL)) < 0 ){
+						type = ERROR;
+						value = RANGE_REAL;
+					} else
+					value = number;
+				} else {
+					type = ERROR;
+					value = INVALID_NUMBER;
+				}
+			}
 		} else {
 			type = ERROR;
 			value = UNEXPECTED_TOKEN;
@@ -103,6 +142,7 @@ public class PascalNumberToken extends PascalToken {
 		try {
 			Character currentChar = currentChar();
 			if (currentChar.toString().equalsIgnoreCase("e")) {
+				type = REAL;
 				textBuffer.append(currentChar); 
 				currentChar = nextChar(); //consumes e
 				StringBuilder eTextBuffer = new StringBuilder();
@@ -136,8 +176,8 @@ public class PascalNumberToken extends PascalToken {
 		}
 	}
 
-	private double calculateValue(String intPart, String dotPart,
-			String eIntPart, String eDotPart) {
+	private BigDecimal calculateValue(String intPart, String dotPart,
+			String eIntPart, String eDotPart) throws Exception{
 		int base = 10;
 		if (intPart == null)
 			intPart = "0";
@@ -147,10 +187,24 @@ public class PascalNumberToken extends PascalToken {
 			eIntPart = "0";
 		if (eDotPart == null)
 			eDotPart = "0";
-		double exp = numerizeText(eIntPart, base, false)
-				+ numerizeText(eDotPart, base, true);
-		return (numerizeText(intPart, base, false) + numerizeText(dotPart,
-				base, true)) * Math.pow(base, exp);
+		
+		//10^(intPart.dotPart) = 10^(intPart)*10^(0.dotPart)
+		//calculates fraction part value
+		BigDecimal exp10Frac = new BigDecimal(Math.pow(base, new Double("0."+eDotPart)));
+		BigDecimal exp10Int = new BigDecimal(Math.pow(base, new Double(eIntPart)));
+		BigDecimal exp = exp10Int.multiply(exp10Frac);
+		BigDecimal unscaled = new BigDecimal(intPart+"."+dotPart);
+		
+		BigDecimal val = unscaled.multiply(exp);
+		//calculates precision
+		int precision = Utility.sigfig(intPart+"."+dotPart);
+		System.out.println("PascalNumberToken.calculateValue(): Precision = "+precision);
+		
+		//now set rounding mode 
+		
+		val = val.round(new MathContext(precision));
+		
+		return val;
 	}
 
 }

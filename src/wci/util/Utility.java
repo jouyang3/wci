@@ -1,5 +1,9 @@
 package wci.util;
 
+import java.math.BigDecimal;
+
+import wci.frontend.pascal.PascalTokenType;
+
 public class Utility {
 	
 	public static boolean someEqual(Object value, Object...objs){
@@ -9,7 +13,90 @@ public class Utility {
 		}
 		return false;
 	}
-
+	
+	public static int sigfig(String simpleNumberText) throws Exception{
+		if(simpleNumberText==null || simpleNumberText == "") 
+			throw new IllegalArgumentException(String.format("The supplied simpleNumberText ['%s'] is empty.", simpleNumberText));
+		if(simpleNumberText.indexOf('e')>-1)
+			throw new IllegalArgumentException(String.format("The supplied simpleNumberText ['%s'] cannot contain exponential component.", simpleNumberText));
+		//test if number is valid
+		if((new BigDecimal(simpleNumberText)).compareTo(new BigDecimal(0)) == 0){
+			return simpleNumberText.length() - simpleNumberText.indexOf('.') -1;
+		}
+		int sigfigs = 0;
+		//remove prefix zero's
+		int i;
+		boolean zeroPrefix = false;
+		for(i=0;i<simpleNumberText.length(); i++){
+			Character digit = simpleNumberText.charAt(i);
+			if(PascalTokenType.DOT.getText().equals(digit.toString())
+					|| PascalTokenType.PLUS.getText().equals(digit.toString())
+					|| PascalTokenType.MINUS.getText().equals(digit.toString()))
+				continue; //skips dot
+			if(Character.isDigit(digit)){
+				if(!zeroPrefix && digit != '0'){
+					zeroPrefix = true; //counting starts whenever first non-zero is encountered.
+				}
+				if(zeroPrefix){
+					sigfigs++;
+				}
+			} else
+				throw new IllegalArgumentException(String.format("The supplied simpleNumberText ['%s'] contains not-text characters.",simpleNumberText));
+		}
+		
+		return sigfigs;
+		
+		
+	}
+	
+	/**
+	 * Returns the decimal point position of a number string.
+	 * TODO: Test it!
+	 * @param numberString
+	 * @return
+	 */
+	public static int dpPos(String numberString){
+		// 0.001e6, dotPos = 1, length = 7, decPos = 3 = 
+		int dotPos = numberString.indexOf('.');
+		int expPos = numberString.length();
+		if( dotPos==-1 ){ //no deciaml point
+			dotPos = numberString.length();
+			expPos = numberString.length() + 1;
+		}
+		Integer eInt = 0; //10^0 = 1
+		int tempExpPos = 0;
+		if((tempExpPos = numberString.indexOf('e')) > -1 || (tempExpPos = numberString.indexOf('E')) > -1){
+			expPos = tempExpPos;
+			//extracts the number after e
+			String expString = numberString.substring(expPos + 1);
+			int expStrDotPos = expString.indexOf('.');
+			//extracts integer part of the exponent
+			String eIntStr = expString.substring(0,expStrDotPos>-1?expStrDotPos:expString.length());
+			eInt = Integer.parseInt(eIntStr);
+		}
+		int decPos = -1*(expPos-dotPos-1);
+		/*
+		 * REALS: 3.14159e10, val = 31415900000 ,dpForPureInt = 10 - 5 = 5
+		 * 
+		 * INT: 3145, val = 3145, dpForPureInt = 0
+		 */
+		return eInt + decPos;
+	}
+	
+	
+	public static boolean lessThan(String numberString, String max){
+		int dpNumPos = dpPos(numberString);
+		if(dpNumPos >= dpPos(max))
+			return false;
+		//now we check digit-by-digit
+		for(int i = 0; i < numberString.length(); i++){
+			Character nc = numberString.charAt(i);
+			Character mc = max.charAt(i);
+			
+		}
+		return false;
+	}
+	
 	public static double numerizeText(String numberText, int base, boolean afterDot)
 			throws IllegalArgumentException {
 		if (numberText != null)

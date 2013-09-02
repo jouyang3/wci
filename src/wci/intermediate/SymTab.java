@@ -1,5 +1,14 @@
 package wci.intermediate;
 
-public class SymTab {
+import java.util.List;
 
+public interface SymTab {
+
+	public int getNestingLevel();
+	
+	public SymTabEntry enter();
+	
+	public SymTabEntry lookup();
+	
+	public List<SymTabEntry> sortedEntries();
 }
