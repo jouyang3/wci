@@ -9,7 +9,7 @@ import static wci.frontend.pascal.PascalTokenType.*;
 
 import static wci.frontend.pascal.PascalErrorCode.INVALID_CHARACTER;
 
-import static wci.util.Utility.*;
+import static wci.util.SexyAssistant.*;
 
 public class PascalSpecialSymbolToken extends PascalToken {
 

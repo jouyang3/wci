@@ -1,7 +1,9 @@
 package wci.frontend.pascal;
 
+import static wci.frontend.pascal.PascalErrorCode.IO_ERROR;
+import static wci.frontend.pascal.PascalTokenType.IDENTIFIER;
+import static wci.frontend.pascal.PascalTokenType.ERROR;
 import static wci.message.MessageType.PARSER_SUMMARY;
-import static wci.message.MessageType.TOKEN;
 
 import java.io.IOException;
 
@@ -10,11 +12,8 @@ import wci.frontend.Parser;
 import wci.frontend.Scanner;
 import wci.frontend.Token;
 import wci.frontend.TokenType;
+import wci.intermediate.SymTabEntry;
 import wci.message.Message;
-
-import static wci.frontend.pascal.PascalErrorCode.IO_ERROR;
-
-import static wci.frontend.pascal.PascalTokenType.ERROR;
 
 public class PascalParserTD extends Parser {
 
@@ -36,14 +35,30 @@ public class PascalParserTD extends Parser {
 			while (!((token = nextToken()) instanceof EofToken)) {
 				TokenType tokenType = token.getType();
 				
-				if(tokenType != ERROR){
-					sendMessage(new Message(TOKEN, new Object[]{
-						token.getLineNumber(), token.getPosition(),
-						tokenType, token.getText(), token.getValue()
-					}));
+				
+//				enables the following lines for debug purpose.
+//				if(tokenType != ERROR){
+//					sendMessage(new Message(TOKEN, new Object[]{
+//						token.getLineNumber(), token.getPosition(),
+//						tokenType, token.getText(), token.getValue()
+//					}));
+//				}
+				if(tokenType == IDENTIFIER){
+					//Use the text of the token as the keys to the local symtab entry values.
+					String name = token.getText().toLowerCase();
 					
-				} else
-				errorHandler.flag(token, (PascalErrorCode) token.getValue(),
+					/*
+					 * If it's not already in the symbol table,
+					 * create and enter a new entry for the identifier.
+					 */
+					SymTabEntry entry = symTabStack.lookup(name);
+					if(entry == null){
+						entry = symTabStack.enterLocal(name);
+					}
+					entry.appendLineNumber(token.getLineNumber());
+				}
+				if(tokenType == ERROR)
+					errorHandler.flag(token, (PascalErrorCode) token.getValue(),
 						this);
 			}
 			float elapsedTime = (System.currentTimeMillis() - startTime) / 1000f;

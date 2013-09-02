@@ -7,7 +7,7 @@ import static wci.frontend.pascal.PascalErrorCode.UNEXPECTED_TOKEN;
 import static wci.frontend.pascal.PascalTokenType.ERROR;
 import static wci.frontend.pascal.PascalTokenType.INTEGER;
 import static wci.frontend.pascal.PascalTokenType.REAL;
-import static wci.util.Utility.someEqual;
+import static wci.util.SexyAssistant.someEqual;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -15,7 +15,7 @@ import java.math.MathContext;
 import wci.frontend.Source;
 import wci.frontend.pascal.PascalToken;
 import wci.frontend.pascal.PascalTokenType;
-import wci.util.Utility;
+import wci.util.SexyAssistant;
 
 public class PascalNumberToken extends PascalToken {
 	
@@ -197,8 +197,8 @@ public class PascalNumberToken extends PascalToken {
 		
 		BigDecimal val = unscaled.multiply(exp);
 		//calculates precision
-		int precision = Utility.sigfig(intPart+"."+dotPart);
-		System.out.println("PascalNumberToken.calculateValue(): Precision = "+precision);
+		int precision = SexyAssistant.sigfig(intPart+"."+dotPart);
+		//System.out.println("PascalNumberToken.calculateValue(): Precision = "+precision);
 		
 		//now set rounding mode 
 		

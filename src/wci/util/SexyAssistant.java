@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 import wci.frontend.pascal.PascalTokenType;
 
-public class Utility {
+public class SexyAssistant {
 	
 	public static boolean someEqual(Object value, Object...objs){
 		for(Object obj:objs){

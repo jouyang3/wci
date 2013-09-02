@@ -2,21 +2,22 @@ package wci.frontend;
 
 import wci.intermediate.ICode;
 import wci.intermediate.SymTab;
+import wci.intermediate.SymTabFactory;
+import wci.intermediate.SymTabStack;
 import wci.message.Message;
 import wci.message.MessageHandler;
 import wci.message.MessageListener;
 import wci.message.MessageProducer;
-import wci.message.MessageType;
 
 public abstract class Parser implements MessageProducer {
 
-	protected static SymTab symTab;
+	protected static SymTabStack symTabStack;
 	protected static MessageHandler messageHandler;
 
 	public static final String PARSER_SUMMARY_FORMAT = "\n%,20d source lines.\n%,20d syntax errors.\n%.20.2f seconds total parsing time.\n";
 
 	static {
-		symTab = null;
+		symTabStack = SymTabFactory.createSymTabStack();
 		messageHandler = new MessageHandler();
 	}
 
@@ -52,12 +53,12 @@ public abstract class Parser implements MessageProducer {
 		messageHandler.sendMessage(message);
 	}
 
-	public static SymTab getSymTab() {
-		return symTab;
+	public static SymTabStack getSymTabStack() {
+		return symTabStack;
 	}
 
-	public static void setSymTab(SymTab symTab) {
-		Parser.symTab = symTab;
+	public static void setSymTabStack(SymTabStack symTabStack) {
+		Parser.symTabStack = symTabStack;
 	}
 
 	public static MessageHandler getMessageHandler() {

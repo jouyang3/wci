@@ -3,7 +3,7 @@ package wci.frontend.pascal;
 import static wci.frontend.Source.EOF;
 import static wci.frontend.pascal.PascalErrorCode.INVALID_CHARACTER;
 import static wci.frontend.pascal.PascalTokenType.END_OF_FILE;
-import static wci.util.Utility.someEqual;
+import static wci.util.SexyAssistant.someEqual;
 import wci.frontend.EofToken;
 import wci.frontend.Scanner;
 import wci.frontend.Source;

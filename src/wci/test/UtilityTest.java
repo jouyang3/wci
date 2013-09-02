@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import wci.frontend.pascal.PascalTokenType;
 import wci.frontend.pascal.tokens.PascalNumberToken;
-import static wci.util.Utility.*;
+import static wci.util.SexyAssistant.*;
 
 public class UtilityTest {
 	
