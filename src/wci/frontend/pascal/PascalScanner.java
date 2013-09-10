@@ -29,8 +29,7 @@ public class PascalScanner extends Scanner {
 			token = new EofToken(source, END_OF_FILE);
 		} else if (Character.isLetter(currentChar)){
 			token = new PascalWordToken(source);
-		} else if (Character.isDigit(currentChar) || (someEqual(Character.toString(currentChar),
-				PascalTokenType.PLUS.getText(), PascalTokenType.MINUS.getText()) && Character.isDigit(peekChar()))){
+		} else if (Character.isDigit(currentChar)){
 			token = new PascalNumberToken(source);
 		} else if (currentChar == '\''){
 			token = new PascalStringToken(source);

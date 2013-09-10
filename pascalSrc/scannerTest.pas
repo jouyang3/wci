@@ -7,7 +7,7 @@
  Two{comments in}{a row} here
  
  {Word tokens}
- Hello world
+ Hello world, Hello!!!
  begin BEGIN Begin BeGiN begins
  
  {String tokens}

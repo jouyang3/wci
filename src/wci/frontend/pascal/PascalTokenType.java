@@ -13,7 +13,7 @@ public enum PascalTokenType implements TokenType {
 	PROGRAM, RECORD, REPEAT, SET, THEN, TO, TYPE, UNTIL, VAR, WHILE, WITH,
 	
 	// Special Symbols
-	PLUS("+"), MINUS("-"), START("*"), SLASH("/"), COLON_EQUALS(":="), DOT("."),
+	PLUS("+"), MINUS("-"), STAR("*"), SLASH("/"), COLON_EQUALS(":="), DOT("."),
 	COMMA(","), SEMICOLON(";"), COLON(":"), QUOTE("'"), EQUALS("="), NOT_EQUALS("<>"),
 	LESS_THAN("<"), LESS_EQUALS("<="), GREATER_EQUALS(">="), GREATER_THAN(">"),
 	LEFT_PAREN("("), RIGHT_PAREN(")"), LEFT_BRACKET("["), RIGHT_BRACKET("]"),

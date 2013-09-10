@@ -1,5 +1,9 @@
 package wci.intermediate;
 
-public class ICode {
+public interface ICode {
 
+	public ICodeNode setRoot(ICodeNode rootNode);
+	
+	public ICodeNode getRoot();
+	
 }

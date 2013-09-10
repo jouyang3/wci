@@ -17,6 +17,7 @@ import wci.message.Message;
 import wci.message.MessageListener;
 import wci.message.MessageType;
 import wci.util.CrossReferencer;
+import wci.util.ParseTreePrinter;
 
 public class Pascal {
 
@@ -49,6 +50,10 @@ public class Pascal {
 			if(xref){
 				CrossReferencer crossReferencer = new CrossReferencer();
 				crossReferencer.print(symTabStack);
+			}
+			if(intermediate){
+				ParseTreePrinter treePrinter = new ParseTreePrinter(System.out);
+				treePrinter.printPrettyXML(iCode);
 			}
 
 			backend.process(iCode, symTabStack);
