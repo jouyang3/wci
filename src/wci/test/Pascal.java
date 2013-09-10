@@ -89,7 +89,7 @@ public class Pascal {
 	private static final String USAGE = "Usage: Pascal execute|compile "
 			+ FLAGS + " <source file path>";
 
-	private static final String SOURCE_LINE_FORMAT = "%03d %s\n";
+	private static final String SOURCE_LINE_FORMAT = "\t%03d %s\n";
 
 	private class SourceMessageListener implements MessageListener {
 

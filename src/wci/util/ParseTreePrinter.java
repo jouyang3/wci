@@ -32,7 +32,7 @@ public class ParseTreePrinter {
 	public ParseTreePrinter(PrintStream ps) {
 		this.ps = ps;
 		this.length = 0;
-		this.indentLevel = 0;
+		this.indentLevel = 1;
 		this.line = new StringBuilder();
 
 		this.indent = "";
