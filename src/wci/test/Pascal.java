@@ -3,7 +3,11 @@ package wci.test;
 import static wci.frontend.pascal.PascalTokenType.STRING;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 import wci.backend.Backend;
 import wci.backend.BackendFactory;
@@ -26,6 +30,17 @@ public class Pascal {
 	private ICode iCode;
 	private SymTabStack symTabStack;
 	private Backend backend;
+	public static String README_MD_FILE = "README.MD";
+	public static PrintStream ps;
+			
+	static{
+		try{
+			ps = new PrintStream(README_MD_FILE);;
+		} catch (IOException e){
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
 
 	public Pascal(String operation, String filePath, String flags) {
 		try {
@@ -42,7 +57,8 @@ public class Pascal {
 			backend.addMessageListener(new BackendMessageListener());
 
 			parser.parse();
-			source.close();
+			
+//			source.close();
 
 			iCode = parser.getiCode();
 			symTabStack = parser.getSymTabStack();
@@ -52,13 +68,13 @@ public class Pascal {
 				crossReferencer.print(symTabStack);
 			}
 			if(intermediate){
-				ParseTreePrinter treePrinter = new ParseTreePrinter(System.out);
+				ParseTreePrinter treePrinter = new ParseTreePrinter(ps);
 				treePrinter.printPrettyXML(iCode);
 			}
 
 			backend.process(iCode, symTabStack);
 		} catch (Exception ex) {
-			System.out.println("***** Internal translator+JVM error. *****");
+			ps.println("***** Internal translator+JVM error. *****");
 			ex.printStackTrace();
 		}
 	}
@@ -81,7 +97,7 @@ public class Pascal {
 				throw new Exception();
 			
 		} catch (Exception ex){
-			System.out.println(USAGE);
+			ps.println(USAGE);
 		}
 	}
 
@@ -89,10 +105,10 @@ public class Pascal {
 	private static final String USAGE = "Usage: Pascal execute|compile "
 			+ FLAGS + " <source file path>";
 
-	private static final String SOURCE_LINE_FORMAT = "\t%03d %s\n";
+	private static final String SOURCE_LINE_FORMAT = "%03d %s";
 
 	private class SourceMessageListener implements MessageListener {
-
+		
 		@Override
 		public void messageReceived(Message message) {
 			MessageType type = message.getType();
@@ -103,8 +119,8 @@ public class Pascal {
 				int lineNumber = (Integer) body[0];
 				String lineText = (String) body[1];
 
-				System.out.printf(SOURCE_LINE_FORMAT,
-						lineNumber, lineText);
+				ps.println(String.format(SOURCE_LINE_FORMAT,
+						lineNumber, lineText));
 
 				break;
 			}
@@ -134,7 +150,7 @@ public class Pascal {
 				int syntaxErrors = (Integer) body[1];
 				float elapsedTime = (Float) body[2];
 				
-				System.out.printf(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime);
+				ps.printf(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime);
 				break;
 			}
 			case TOKEN: {
@@ -145,14 +161,14 @@ public class Pascal {
 				String tokenText = (String) body[3];
 				Object tokenValue = body[4];
 				
-				System.out.println(String.format(TOKEN_FORMAT, tokenType,
+				ps.println(String.format(TOKEN_FORMAT, tokenType,
 						line, position, tokenText));
 				
 				if(tokenValue!=null){
 					if(tokenType == STRING)
 						tokenValue = "\""+tokenValue+"\"";
 					
-					System.out.println(String.format(VALUE_FORMAT, tokenValue));
+					ps.println(String.format(VALUE_FORMAT, tokenValue));
 				}
 				break;
 			}
@@ -181,7 +197,7 @@ public class Pascal {
 				if(tokenText != null)
 					flagBuffer.append(" [at \"").append(tokenText).append("\"]");
 				
-				System.out.println(flagBuffer.toString());
+				ps.println(flagBuffer.toString());
 				break;
 				
 			}
@@ -207,7 +223,7 @@ public class Pascal {
 				int runtimeErrors = (Integer) body[1];
 				float elapsedTime = (Float) body[2];
 				
-				System.out.printf(INTERPRETER_SUMMARY_FORMAT, executionCount, runtimeErrors, elapsedTime);
+				ps.printf(INTERPRETER_SUMMARY_FORMAT, executionCount, runtimeErrors, elapsedTime);
 				break;
 			}
 			case COMPILER_SUMMARY: {
@@ -215,7 +231,7 @@ public class Pascal {
 				int instructionCount = (Integer) body[0];
 				float elapsedTime = (Float) body[1];
 				
-				System.out.printf(COMPILER_SUMMARY_FORMAT, instructionCount, elapsedTime);
+				ps.printf(COMPILER_SUMMARY_FORMAT, instructionCount, elapsedTime);
 				break;
 			}
 			}

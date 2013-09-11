@@ -14,7 +14,9 @@ import wci.intermediate.icodeimpl.ICodeNodeImpl;
 public class ParseTreePrinter {
 
 	public static final String OUTPUT_TITLE = "INTERMEDIATE CODE";
-	private static final String OUTPUT_HEAD = "\n===== " + OUTPUT_TITLE
+	private static final String OUTPUT_HEAD = "\n===== " + "BEGIN " + OUTPUT_TITLE
+			+ " =====\n";
+	private static final String OUTPUT_TAIL = "\n===== " + "END " + OUTPUT_TITLE
 			+ " =====\n";
 
 	private static final int INDENT_WIDTH = 4;
@@ -32,7 +34,7 @@ public class ParseTreePrinter {
 	public ParseTreePrinter(PrintStream ps) {
 		this.ps = ps;
 		this.length = 0;
-		this.indentLevel = 1;
+		this.indentLevel = 0;
 		this.line = new StringBuilder();
 
 		this.indent = "";
@@ -41,10 +43,12 @@ public class ParseTreePrinter {
 	}
 
 	public void printPrettyXML(ICode iCode) {
-		ps.println(OUTPUT_HEAD);
+		ps.println();
+		ps.print(OUTPUT_HEAD);
 		// With the constant casting, how is this generic?
 		printNode((ICodeNodeImpl) iCode.getRoot());
 		printLine();
+		ps.print(OUTPUT_TAIL);
 		ps.flush(); // in the case of a buffered writer.
 	}
 

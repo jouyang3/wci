@@ -73,7 +73,6 @@ public class PascalParserTD extends Parser {
 				if(tokenType == BEGIN){
 					StatementParser statementParser = new StatementParser(this);
 					rootNode = statementParser.parse(token);
-					token = currentToken();
 				} else {
 					errorHandler.flag(token, UNEXPECTED_TOKEN, this);
 				}
@@ -83,6 +82,7 @@ public class PascalParserTD extends Parser {
 				if(rootNode != null){
 					iCode.setRoot(rootNode);
 				}
+			this.scanner.getSource().close();
 			float elapsedTime = (System.currentTimeMillis() - startTime) / 1000f;
 			
 			sendMessage(new Message(PARSER_SUMMARY, new Number[] {

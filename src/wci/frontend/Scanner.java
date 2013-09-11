@@ -32,27 +32,35 @@ public abstract class Scanner implements MessageProducer {
 	public char nextChar() throws Exception {
 		return source.nextChar();
 	}
-	
+
 	public char peekChar() throws Exception {
 		return source.peekChar();
 	}
-	
+
 	private static MessageHandler messageHandler;
-	
-	static{
+
+	static {
 		messageHandler = new MessageHandler();
 	}
 
-	public void addMessageListener(MessageListener listener){
+	public void addMessageListener(MessageListener listener) {
 		messageHandler.addListener(listener);
 	}
 
-	public void removeMessageListener(MessageListener listener){
+	public void removeMessageListener(MessageListener listener) {
 		messageHandler.removeListener(listener);
 	}
 
-	public void sendMessage(Message message){
+	public void sendMessage(Message message) {
 		messageHandler.sendMessage(message);
+	}
+
+	public Source getSource() {
+		return source;
+	}
+
+	public void setSource(Source source) {
+		this.source = source;
 	}
 
 }
