@@ -37,10 +37,13 @@ Writing Compilers and Interpreters: A Software Engineering Approach
 
 ===== END SOURCE =====
 
+===== BEGIN FRONTEND PARSER =====
+
                   27 source lines.
                    0 syntax errors.
                 0.02 seconds total parsing time.
-	
+
+===== END FRONTEND PARSER =====	
 
 ===== BEGIN INTERMEDIATE CODE =====
 	
@@ -159,8 +162,11 @@ Writing Compilers and Interpreters: A Software Engineering Approach
 
 ===== END INTERMEDIATE CODE =====
 
+===== BEGIN BACKEND =====
+
                    0 instructions generated.
                 0.00 seconds total code generation time.
 
+===== END BACKEND =====
 
 ===== END OUTPUT FOR CHAPTER 5 =====

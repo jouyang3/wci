@@ -149,8 +149,9 @@ public class Pascal {
 				int statementCount = (Integer) body[0];
 				int syntaxErrors = (Integer) body[1];
 				float elapsedTime = (Float) body[2];
-				
+				ps.print("\n===== BEGIN FRONTEND PARSER =====\n");
 				ps.printf(PARSER_SUMMARY_FORMAT, statementCount, syntaxErrors, elapsedTime);
+				ps.print("\n===== END FRONTEND PARSER =====");
 				break;
 			}
 			case TOKEN: {
@@ -211,10 +212,16 @@ public class Pascal {
 	private static final String COMPILER_SUMMARY_FORMAT =
 			"\n%,20d instructions generated.\n%,20.2f seconds total code generation time.\n";
 	
+	private static final String BACKEND_TITLE = " BACKEND ";
+	private static final String BACKEND_BAR = "=====";
+	
 	private class BackendMessageListener implements MessageListener{
 
 		@Override
 		public void messageReceived(Message message) {
+			
+			ps.print("\n"+BACKEND_BAR+" BEGIN"+BACKEND_TITLE+BACKEND_BAR+"\n");
+			
 			MessageType type = message.getType();
 			switch(type){
 			case INTERPRETER_SUMMARY: {
@@ -222,6 +229,8 @@ public class Pascal {
 				int executionCount = (Integer) body[0];
 				int runtimeErrors = (Integer) body[1];
 				float elapsedTime = (Float) body[2];
+				
+				
 				
 				ps.printf(INTERPRETER_SUMMARY_FORMAT, executionCount, runtimeErrors, elapsedTime);
 				break;
@@ -235,6 +244,7 @@ public class Pascal {
 				break;
 			}
 			}
+			ps.print("\n"+BACKEND_BAR+" END"+BACKEND_TITLE+BACKEND_BAR);
 		}
 		
 	}
