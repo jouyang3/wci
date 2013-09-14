@@ -20,7 +20,7 @@ public class ParseTreePrinter {
 			+ " =====\n";
 
 	private static final int INDENT_WIDTH = 4;
-	private static int LINE_WIDTH = 80;
+	private static int LINE_WIDTH = 100;
 
 	private PrintStream ps;
 	private int length;
@@ -61,11 +61,15 @@ public class ParseTreePrinter {
 		List<ICodeNode> childNodes = node.getChildren();
 		if (childNodes != null && childNodes.size() > 0) {
 			append(">");
-			indentLevel++;
+			int nInd = (indentLevel+1)*indent.length();
+			int tInd = indentLevel;
+			if(nInd < LINE_WIDTH)
+				indentLevel++;
 			for (ICodeNode childNode : childNodes) {
 				printNode((ICodeNodeImpl) childNode);
 			}
-			indentLevel--;
+			if(tInd < indentLevel)
+				indentLevel--;
 			append("\n"+indent(indentLevel));
 			append("</" + node.toString() + ">");
 		} else {

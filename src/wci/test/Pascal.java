@@ -35,8 +35,8 @@ public class Pascal {
 			
 	static{
 		try{
-			ps = new PrintStream(README_MD_FILE);;
-		} catch (IOException e){
+			ps = new PrintStream(README_MD_FILE);
+		} catch (Exception e){
 			e.printStackTrace();
 			System.exit(1);
 		}
